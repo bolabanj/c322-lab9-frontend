@@ -18,10 +18,15 @@ async function signup() {
             alert("The registration was successful!")
             location.href = "login.html";
 
-        } else {
+        }
+        else if(response.status == 401) {
+          alert("The username is already taken!");
+        }
+         else {
             console.log(`response status:${response.status}`);            
             alert("Something went wrong!");
         }
+
       }
       catch(error) {
         console.log(error);        

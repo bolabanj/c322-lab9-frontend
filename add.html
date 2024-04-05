@@ -24,7 +24,7 @@
       <button onclick="addTheDuck()">Add the duck</button>
     </div>
     <script>
-      let host = "http://localhost:8080";
+      let host = getHost();
           async function addTheDuck() {
               let message = "";
                 let duckName = document.getElementById("name").value;
@@ -42,11 +42,15 @@
                 let request = {
                   method: "POST",
                   headers: {
+                      "Authorization": `Bearer ${configuration.token}`,
                       "Content-Type": "application/json"
                   },
                   body: JSON.stringify(duck)
                 };
                 let response = await fetch(host + "/ducks", request);
+                if (response.status == 401) {
+                  logout();
+                }
                 if(response.status == 200) {
                   let id = await response.json();
                   let result = await submitTheImage(id);
@@ -67,11 +71,15 @@
                 let formData = new FormData();
                 formData.append("file", imageInput.files[0]);
                 let request = {
+                  headers: {"Authorization": `Bearer ${configuration.token}`},
                   method: "POST",
                   body: formData
                 };
                 let response = await fetch(host + "/ducks/" + duckId + "/image", request);
                 let result = await response.json();
+                if (response.status == 401) {
+                  logout();
+                }
                 return result;
 
           }
